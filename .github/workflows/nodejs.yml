@@ -10,8 +10,9 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build: docker-compose -f docker-compose-build.yaml build --parallel
-    runs-on: ubuntu-20.04
+  build:
+    runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v3
     - run: docker-compose -f docker-compose-build.yaml build --parallel
