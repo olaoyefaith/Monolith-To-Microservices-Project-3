@@ -22,7 +22,7 @@ jobs:
     - run: docker tag udagram-api-feed olaoyefaith/udagram-api-feed:v1
     - run: docker tag udagram-api-user olaoyefaith/udagram-api-user:v1
     - run: docker tag udagram-reverseproxy olaoyefaith/udagram-reverseproxy:v1
-    - run: echo "${{secrets.DOCKER_PASSWORD}}" | docker login -u "${{secrets.DOCKER}_USERNAME}" --password-std
+    - run: echo "${{secrets.DOCKER_PASSWORD}}" | docker login -u "${{secrets.DOCKER_USERNAME}}" --password-std
     - run: docker push olaoyefaith/udagram-frontend:v1
     - run: docker push olaoyefaith/udagram-api-feed:v1
     - run: docker push olaoyefaith/udagram-api-user:v1
