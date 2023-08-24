@@ -2,7 +2,7 @@ name: deploy microservice to azure-kubernetes
 
 on:
   push:
-    branches: none # [ main ]
+    branches: build-and-deploy # [ main ]
   pull_request:
     branches:  none # [ release ]
   # Allows you to run this workflow manually from the Actions tab
@@ -87,7 +87,9 @@ jobs:
       uses: datamonsters/replace-action@v2
       with:
         files: infra/terraform.tfvars
-        replacements: '__AKS_RESOURCE_GROUP__=${{ env.AKS_RESOURCE_GROUP }},__AKS_NAME__=${{ env.AKS_NAME }},__ACR_NAME__=${{ env.ACR_NAME }},__SQL_INSTANCE_NAME__=${{ env.SQL_INSTANCE_NAME }},__DB_ADMIN_LOGIN__=${{ env.DB_ADMIN_LOGIN }},__DB_ADMIN_PASSWORD__=${{ env.DB_ADMIN_PASSWORD }},__STORAGE_NAME__=${{ env.STORAGE_NAME }}'
+        replacements: '__AKS_RESOURCE_GROUP__=${{ env.AKS_RESOURCE_GROUP }},__AKS_NAME__=${{ env.AKS_NAME }},
+        
+        # __ACR_NAME__=${{ env.ACR_NAME }},__SQL_INSTANCE_NAME__=${{ env.SQL_INSTANCE_NAME }},__DB_ADMIN_LOGIN__=${{ env.DB_ADMIN_LOGIN }},__DB_ADMIN_PASSWORD__=${{ env.DB_ADMIN_PASSWORD }},__STORAGE_NAME__=${{ env.STORAGE_NAME }}'
  
     - uses: hashicorp/setup-terraform@v1
       name: Setup Terraform
@@ -147,11 +149,11 @@ jobs:
     #     cluster-name: ${{ env.AKS_NAME }}
     #     resource-group: ${{ env.AKS_RESOURCE_GROUP }}
 
-    - uses: Azure/k8s-deploy@v1
-      name: Deploy YAML manifest into AKS
-      with:
-        manifests: |
-          kubernetesmanifest
+    # - uses: Azure/k8s-deploy@v1
+    #   name: Deploy YAML manifest into AKS
+    #   with:
+    #     manifests: |
+    #       kubernetesmanifest
           
      
     # - name: Run Kube Advisor to check for Resource Limits
