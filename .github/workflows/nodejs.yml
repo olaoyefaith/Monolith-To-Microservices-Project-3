@@ -5,23 +5,25 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: none # [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches: none #[ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+   
 
+    
     steps:
     - uses: actions/checkout@v3
     - run: docker-compose -f docker-compose-build.yaml build --parallel
-    - run: docker tag udagram-frontend:local olaoyefaith/udagram-frontend:v1
-    - run: docker tag udagram-api-feed olaoyefaith/udagram-api-feed:v1
-    - run: docker tag udagram-api-user olaoyefaith/udagram-api-user:v1
-    - run: docker tag reverseproxy olaoyefaith/reverseproxy:v1
+    - run: docker tag udagram-frontend:local olaoyefaith/udagram-frontend:${{ github.run_number }}
+    - run: docker tag udagram-api-feed olaoyefaith/udagram-api-feed:${{ github.run_number }}
+    - run: docker tag udagram-api-user olaoyefaith/udagram-api-user:${{ github.run_number }}
+    - run: docker tag reverseproxy olaoyefaith/reverseproxy:${{ github.run_number }}
     - run: echo "${{secrets.DOCKER_PASSWORD}}" | docker login -u "${{secrets.DOCKER_USERNAME}}" --password-stdin
-    - run: docker push olaoyefaith/udagram-frontend:v1
-    - run: docker push olaoyefaith/udagram-api-feed:v1
-    - run: docker push olaoyefaith/udagram-api-user:v1
-    - run: docker push olaoyefaith/reverseproxy:v1
+    - run: docker push olaoyefaith/udagram-frontend:${{ github.run_number }}
+    - run: docker push olaoyefaith/udagram-api-feed:${{ github.run_number }}
+    - run: docker push olaoyefaith/udagram-api-user:${{ github.run_number }}
+    - run: docker push olaoyefaith/reverseproxy:${{ github.run_number }}
