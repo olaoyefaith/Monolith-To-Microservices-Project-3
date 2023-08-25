@@ -33,8 +33,7 @@ env:
   #all placeholders to be replaced
     
 jobs:
-
-  build-and-deploy:
+   build-and-deploy:
     name: Build and deploy into AKS
     runs-on: ubuntu-latest
 
