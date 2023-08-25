@@ -14,9 +14,9 @@ variable "kubernetes_version" {
 
 }
 
-variable "acr_name" {
+# variable "acr_name" {
   
-}
+# }
 
 variable "sql_name" {
  
