@@ -78,7 +78,7 @@ jobs:
     - name: Get TF backend storage account key
       uses: azure/CLI@v1
       with:
-        azcliversion: 2.27.2
+        azcliversion: 2.35.0
         inlineScript: |
           # Retrieve the storage account key
           ACCOUNT_KEY=$(az storage account keys list --resource-group $INFRA_RESOURCE_GROUP --account-name $TF_STATE_STORAGE_ACCOUNT_NAME --query [0].value -o tsv)
@@ -96,7 +96,7 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
-       terraform_version: 1.0.6 
+       terraform_version: 1.1.7 
     
     - name: Terraform fmt
       id: fmt
