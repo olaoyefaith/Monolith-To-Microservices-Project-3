@@ -51,8 +51,8 @@
             azcliversion: 2.35.0
             inlineScript: |
               # Retrieve the storage account key
-                az storage account keys list --resource-group $INFRA_RESOURCE_GROUP --account-name $TF_STATE_STORAGE_ACCOUNT_NAME --query [0].value -o tsv
-              ACCOUNT_KEY=$( az storage account keys list --resource-group $INFRA_RESOURCE_GROUP --account-name $TF_STATE_STORAGE_ACCOUNT_NAME --query [0].value -o tsv)
+              json_output=$(az storage account keys list --resource-group $INFRA_RESOURCE_GROUP --account-name $TF_STATE_STORAGE_ACCOUNT_NAME)
+              ACCOUNT_KEY=$(echo "$json_output" | jq -r '.[0].value')
   
               # Create a storage container (for the Terraform State)
   
