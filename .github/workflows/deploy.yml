@@ -33,6 +33,9 @@
           uses: azure/login@v1
           with:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+       
+
         - name: Create storage for tfstate
           uses: azure/CLI@v1
           with:
@@ -50,28 +53,30 @@
           with:
             azcliversion: 2.35.0
             inlineScript: |
-              sudo apt-get update
-              sudo apt-get install -y jq
+             
               # Retrieve the storage account key
-              json_output=$(az storage account keys list --resource-group $INFRA_RESOURCE_GROUP --account-name $TF_STATE_STORAGE_ACCOUNT_NAME)
-              ACCOUNT_KEY=$(echo "$json_output" | jq -r '.[0].value')
-  
+              
               # Create a storage container (for the Terraform State)
   
               az storage container create --name $TF_STATE_CONTAINER_NAME --account-name $TF_STATE_STORAGE_ACCOUNT_NAME --account-key $ACCOUNT_KEY
   
   
-              echo "TF_STATE_ACCESS_KEY=$ACCOUNT_KEY" >> $GITHUB_ENV
+              
+
+        - run: |
+           sudo apt-get install -y jq
+           json_output=$(az storage account keys list --resource-group $INFRA_RESOURCE_GROUP --account-name $TF_STATE_STORAGE_ACCOUNT_NAME)
+            ACCOUNT_KEY=$(echo "$json_output" | jq -r '.[0].value')
+            echo "TF_STATE_ACCESS_KEY=$ACCOUNT_KEY" >> $GITHUB_ENV
   
   
   
-              - name: Replace Variables in terraform.tfvars
   
-              uses: datamonsters/replace-action@v2
-  
-              with:
-                files: infra/terraform.tfvars
-                replacements: '__AKS_RESOURCE_GROUP__=${{ env.AKS_RESOURCE_GROUP }},__AKS_NAME__=${{ env.AKS_NAME }},__ACR_NAME__=${{ env.ACR_NAME }},__SQL_INSTANCE_NAME__=${{ env.SQL_INSTANCE_NAME }},__DB_ADMIN_LOGIN__=${{ env.DB_ADMIN_LOGIN }},__DB_ADMIN_PASSWORD__=${{ env.DB_ADMIN_PASSWORD }},__STORAGE_NAME__=${{ env.STORAGE_NAME }}'
+        - name: Replace Variables in terraform.tfvars
+          uses: datamonsters/replace-action@v2
+          with:
+           files: infra/terraform.tfvars
+           replacements: '__AKS_RESOURCE_GROUP__=${{ env.AKS_RESOURCE_GROUP }},__SQL_INSTANCE_NAME__=${{ env.SQL_INSTANCE_NAME }},__DB_ADMIN_LOGIN__=${{ env.DB_ADMIN_LOGIN }},__DB_ADMIN_PASSWORD__=${{ env.DB_ADMIN_PASSWORD }},__STORAGE_NAME__=${{ env.STORAGE_NAME }}'
         - name: Setup Terraform
           uses: hashicorp/setup-terraform@v1
           with:
