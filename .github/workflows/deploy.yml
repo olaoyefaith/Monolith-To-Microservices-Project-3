@@ -50,6 +50,8 @@
           with:
             azcliversion: 2.35.0
             inlineScript: |
+              sudo apt-get update
+              sudo apt-get install -y jq
               # Retrieve the storage account key
               json_output=$(az storage account keys list --resource-group $INFRA_RESOURCE_GROUP --account-name $TF_STATE_STORAGE_ACCOUNT_NAME)
               ACCOUNT_KEY=$(echo "$json_output" | jq -r '.[0].value')
