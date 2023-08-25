@@ -44,7 +44,7 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+       creds: ${{ secrets.AZURE_CREDENTIALS }}
 
    
     - name: Create storage for tfstate
@@ -73,7 +73,7 @@ jobs:
     # - name: Login to Azure
     #   uses: azure/login@v1
     #   with:
-    #     creds: ${{ secrets.AZURE_CREDENTIALS }}
+    #    creds: ${{ secrets.AZURE_CREDENTIALS }}
         
     - name: Get TF backend storage account key
       uses: azure/CLI@v1
@@ -125,4 +125,4 @@ jobs:
     - name: Terraform Apply
        # if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       run: terraform apply -auto-approve out.plan
-     working-directory: infra
+      working-directory: infra
