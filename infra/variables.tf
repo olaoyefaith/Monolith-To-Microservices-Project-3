@@ -3,7 +3,8 @@ variable "node_count" {
 }
 
 variable "dns_prefix" {
- 
+ default = "aks-k8s-2022"
+
 }
 
 variable "cluster_name" {
@@ -43,5 +44,5 @@ variable "resource_group_name" {
 }
 
 variable "location" {
-
+ default = "westeurope"
 }
