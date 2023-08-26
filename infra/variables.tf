@@ -18,21 +18,21 @@ variable "kubernetes_version" {
   
 # }
 
-variable "sql_name" {
+# variable "sql_name" {
  
-}
+# }
 
-variable "db_name" {
+# variable "db_name" {
  
-}
+# }
 
-variable "db_admin_login" {
+# variable "db_admin_login" {
  
-}
+# }
 
-variable "db_admin_password" {
+# variable "db_admin_password" {
  
-}
+# }
 
 variable "storage_name" {
  
