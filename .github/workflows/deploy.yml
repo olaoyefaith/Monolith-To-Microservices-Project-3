@@ -97,11 +97,11 @@
           working-directory: infra
 
         - name: Terraform Plan
-          run: terraform plan out out.plan -lock=false -var-file="terraform.tfvars"
+          run: terraform plan -lock=false -var-file="terraform.tfvars"
           working-directory: infra
           continue-on-error: true
 
         - name: Terraform Apply
-          run: terraform apply out.plan -auto-approve
+          run: terraform apply -auto-approve
           working-directory: infra
   
