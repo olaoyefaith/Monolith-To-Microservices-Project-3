@@ -96,12 +96,17 @@
           run: terraform validate -no-color
           working-directory: infra
 
-        - name: Terraform Plan
-          run: terraform plan -lock=false -var-file="terraform.tfvars"
-          working-directory: infra
-          continue-on-error: true
+        # - name: Terraform Plan
+        #   run: terraform plan -lock=false -var-file="terraform.tfvars"
+        #   working-directory: infra
+        #   continue-on-error: true
 
-        - name: Terraform Apply
-          run: terraform apply -auto-approve
+        # - name: Terraform Apply
+        #   run: terraform apply -auto-approve
+        #   working-directory: infra
+
+        - name: Terraform destroy
+          run: terraform destroy -auto-approve
           working-directory: infra
+  
   
