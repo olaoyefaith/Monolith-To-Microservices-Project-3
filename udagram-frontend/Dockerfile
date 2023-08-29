@@ -1,7 +1,5 @@
 ## Build
- FROM alpine:3.17
-
-ENV NODE_VERSION 16.20.2
+ FROM node:16-alpine as build 
  # Create app directory
  WORKDIR /usr/src/app
  # Install app dependencies
