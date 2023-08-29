@@ -35,9 +35,9 @@ variable "kubernetes_version" {
 
 # }
 
-variable "storage_name" {
+# variable "storage_name" {
 
-}
+# }
 
 variable "resource_group_name" {
   description = "Name of the Azure resource group"
