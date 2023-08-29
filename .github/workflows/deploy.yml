@@ -88,6 +88,12 @@
           run: terraform validate -no-color
           working-directory: infra
 
+        - name: Terraform Plan
+          id: plan
+          run: terraform plan -var-file="terraform.tfvars"
+          working-directory: infra
+          continue-on-error: true
+
         - name: Terraform apply
           run: terraform apply -auto-approve
           working-directory: infra
