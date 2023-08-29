@@ -1,5 +1,5 @@
 ## Build
- FROM node:16-alpine as build 
+ FROM node:16-alpine
  # Create app directory
  WORKDIR /usr/src/app
  # Install app dependencies
