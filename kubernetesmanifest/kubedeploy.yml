@@ -1,0 +1,217 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-app-secrets
+type: Opaque
+data:
+  username: base64_encoded_username
+  password: base64_encoded_password
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-app-configmap
+data:
+  config-key: config-value
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app-container
+          image: your/app-image:tag
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: my-app-secrets
+          env:
+            - name: CONFIG_VAR
+              valueFrom:
+                configMapKeyRef:
+                  name: my-app-configmap
+                  key: config-key
+          resources:
+            limits:
+              cpu: "0.5" # Maximum CPU allowed
+              memory: "512Mi" # Maximum memory allowed
+            requests:
+              cpu: "0.2" # Minimum CPU required
+              memory: "256Mi" # Minimum memory required
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app-container
+          image: your/app-image:tag
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: my-app-secrets
+          env:
+            - name: CONFIG_VAR
+              valueFrom:
+                configMapKeyRef:
+                  name: my-app-configmap
+                  key: config-key
+          resources:
+            limits:
+              cpu: "0.5" # Maximum CPU allowed
+              memory: "512Mi" # Maximum memory allowed
+            requests:
+              cpu: "0.2" # Minimum CPU required
+              memory: "256Mi" # Minimum memory required
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app-container
+          image: your/app-image:tag
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: my-app-secrets
+          env:
+            - name: CONFIG_VAR
+              valueFrom:
+                configMapKeyRef:
+                  name: my-app-configmap
+                  key: config-key
+          resources:
+            limits:
+              cpu: "0.5" # Maximum CPU allowed
+              memory: "512Mi" # Maximum memory allowed
+            requests:
+              cpu: "0.2" # Minimum CPU required
+              memory: "256Mi" # Minimum memory required
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app-container
+          image: your/app-image:tag
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: my-app-secrets
+          env:
+            - name: CONFIG_VAR
+              valueFrom:
+                configMapKeyRef:
+                  name: my-app-configmap
+                  key: config-key
+          resources:
+            limits:
+              cpu: "0.5" # Maximum CPU allowed
+              memory: "512Mi" # Maximum memory allowed
+            requests:
+              cpu: "0.2" # Minimum CPU required
+              memory: "256Mi" # Minimum memory required
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer

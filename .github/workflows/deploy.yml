@@ -20,27 +20,33 @@
     AKS_RESOURCE_GROUP: aks-102-rg
     AKS_NAME: aks-102
     SQL_INSTANCE_NAME: sqlforaks102
-    DB_ADMIN_LOGIN: houssem
-    DB_ADMIN_PASSWORD: "@Aa123456"
+    ADMINISTRATOR_LOGIN_PASSWORD: houssem
+    ADMINISTRATOR_LOGIN: "@Aa123456"
     STORAGE_NAME: storageforaks102
+
   jobs:
     build-and-deploy:
       name: Build and deploy into AKS
       runs-on: ubuntu-latest
+
       steps:
         - uses: actions/checkout@v2
         - name: Login to Azure
           uses: azure/login@v1
           with:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
+
         - name: Create storage for tfstate
           uses: azure/CLI@v1
           with:
             azcliversion: 2.35.0
-            inlineScript: |
+            inlineScript: >
               # Create the resource group
+  
               az group create -n $INFRA_RESOURCE_GROUP -l $LOCATION          
+  
               # Create the storage account
+  
               az storage account create -g $INFRA_RESOURCE_GROUP -l $LOCATION \
                 --name $TF_STATE_STORAGE_ACCOUNT_NAME \
                 --sku Standard_LRS \
@@ -49,36 +55,22 @@
                 ACCOUNT_KEY=$(az storage account keys list --resource-group $INFRA_RESOURCE_GROUP --account-name $TF_STATE_STORAGE_ACCOUNT_NAME --query [0].value -o tsv)
                 # Create a storage container (for the Terraform State)
                 az storage container create --name $TF_STATE_CONTAINER_NAME --account-name $TF_STATE_STORAGE_ACCOUNT_NAME --account-key $ACCOUNT_KEY
-      
+  
                 echo "TF_STATE_ACCESS_KEY=$ACCOUNT_KEY" >> $GITHUB_ENV
 
-        # - name: Get TF backend storage account key
-        #   uses: azure/CLI@v1
-        #   with:
-        #     azcliversion: 2.35.0
-        #     inlineScript: |
-        #       # Retrieve the storage account key
-        #         az storage account keys list --resource-group $INFRA_RESOURCE_GROUP --account-name $TF_STATE_STORAGE_ACCOUNT_NAME --query [0].value -o tsv
-        #       ACCOUNT_KEY=$( az storage account keys list --resource-group $INFRA_RESOURCE_GROUP --account-name $TF_STATE_STORAGE_ACCOUNT_NAME --query [0].value -o tsv)
-  
-        #       # Create a storage container (for the Terraform State)
-  
-        #       az storage container create --name $TF_STATE_CONTAINER_NAME --account-name $TF_STATE_STORAGE_ACCOUNT_NAME --account-key $ACCOUNT_KEY
-  
-  
-        #       echo "TF_STATE_ACCESS_KEY=$ACCOUNT_KEY" >> $GITHUB_ENV
-  
-  
-  
         - name: Replace Variables in terraform.tfvars
           uses: datamonsters/replace-action@v2
           with:
-           files: infra/terraform.tfvars
-           replacements: '__AKS_RESOURCE_GROUP__=${{ env.AKS_RESOURCE_GROUP }},__AKS_NAME__=${{ env.AKS_NAME }},__SQL_INSTANCE_NAME__=${{ env.SQL_INSTANCE_NAME }},__DB_ADMIN_LOGIN__=${{ env.DB_ADMIN_LOGIN }},__DB_ADMIN_PASSWORD__=${{ env.DB_ADMIN_PASSWORD }},__STORAGE_NAME__=${{ env.STORAGE_NAME }}'
+            files: infra/terraform.tfvars
+            replacements: __AKS_RESOURCE_GROUP__=${{ env.AKS_RESOURCE_GROUP}},__AKS_NAME__=${{ env.AKS_NAME }},,__ADMINISTRATOR_LOGIN__=${{ env.ADMINISTRATOR_LOGIN}},__ADMINISTRATOR_LOGIN_PASSWORD__=${{ env.ADMINISTRATOR_LOGIN_PASSWORD }},__STORAGE_NAME__=${{ env.STORAGE_NAME }},
+            # __SQL_INSTANCE_NAME__=${{
+              # env.SQL_INSTANCE_NAME }}
+
         - name: Setup Terraform
           uses: hashicorp/setup-terraform@v1
           with:
             terraform_version: 1.1.7
+
         - name: Terraform fmt
           id: fmt
           run: terraform fmt
@@ -96,17 +88,30 @@
           run: terraform validate -no-color
           working-directory: infra
 
-        # - name: Terraform Plan
-        #   run: terraform plan -lock=false -var-file="terraform.tfvars"
-        #   working-directory: infra
-        #   continue-on-error: true
-
-        # - name: Terraform Apply
-        #   run: terraform apply -auto-approve
-        #   working-directory: infra
-
-        - name: Terraform destroy
-          run: terraform destroy -auto-approve
+        - name: Terraform apply
+          run: terraform apply -auto-approve
           working-directory: infra
-  
+
+        # - name: Terraform destroy
+        #   run: terraform destroy -auto-approve
+        #   working-directory: infra
+
+        # - name: Replace Image Repository, Name and Tag in YAML deployment
+        #   uses: datamonsters/replace-action@v2
+        #   with:
+        #     files: kubernetesmanifest/kubedeploy.yml
+        #     replacements: REPOSITORY_NAME_NAME=${{ env.DOCKER_REPOSITORY }},DOCKER_IMAGE=${{ env.IMAGE_NAME }},TAG=${{ env.IMAGE_TAG }}
+
+        - uses: Azure/aks-set-context@v1
+          name: Connect to AKS
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+            cluster-name: ${{ env.AKS_NAME }}
+            resource-group: ${{ env.AKS_RESOURCE_GROUP }}
+
+        - uses: Azure/k8s-deploy@v1
+          name: Deploy YAML manifest into AKS
+          with:
+            manifests: |
+              kubernetesmanifest/kubedeploy.yml
   
