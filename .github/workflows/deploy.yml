@@ -95,13 +95,13 @@
           working-directory: infra
           continue-on-error: true
 
-        - name: Terraform apply
-          run: terraform apply -auto-approve
-          working-directory: infra
-
-        # - name: Terraform destroy
-        #   run: terraform destroy -auto-approve
+        # - name: Terraform apply
+        #   run: terraform apply -auto-approve
         #   working-directory: infra
+
+        - name: Terraform destroy
+          run: terraform destroy -auto-approve
+          working-directory: infra
 
         # - name: Replace Image Repository, Name and Tag in YAML deployment
         #   uses: datamonsters/replace-action@v2
@@ -109,16 +109,16 @@
         #     files: kubernetesmanifest/kubedeploy.yml
         #     replacements: REPOSITORY_NAME_NAME=${{ env.DOCKER_REPOSITORY }},DOCKER_IMAGE=${{ env.IMAGE_NAME }},TAG=${{ env.IMAGE_TAG }}
 
-        - uses: Azure/aks-set-context@v1
-          name: Connect to AKS
-          with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
-            cluster-name: ${{ env.AKS_NAME }}
-            resource-group: ${{ env.AKS_RESOURCE_GROUP }}
+        # - uses: Azure/aks-set-context@v1
+        #   name: Connect to AKS
+        #   with:
+        #     creds: ${{ secrets.AZURE_CREDENTIALS }}
+        #     cluster-name: ${{ env.AKS_NAME }}
+        #     resource-group: ${{ env.AKS_RESOURCE_GROUP }}
 
-        - uses: Azure/k8s-deploy@v1
-          name: Deploy YAML manifest into AKS
-          with:
-            manifests: |
-              kubernetesmanifest/kubedeploy.yml
+        # - uses: Azure/k8s-deploy@v1
+        #   name: Deploy YAML manifest into AKS
+        #   with:
+        #     manifests: |
+        #       kubernetesmanifest/kubedeploy.yml
   
